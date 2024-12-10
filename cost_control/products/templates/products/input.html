@@ -7,16 +7,69 @@
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <style>
         .form-group {
-            display: flex;
+            display: grid;
+            grid-template-columns: 150px 300px auto; /* Устанавливаем три столбца: метки, элементы ввода и кнопки */
+            gap: 10px;
             align-items: center;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
         }
         .form-group label {
-            margin-right: 10px;
+            font-family: Arial, sans-serif; /* Изменяем шрифт на Arial */
+            font-size: 18px; /* Увеличиваем размер шрифта для меток */
+            font-weight: bold; /* Делаем шрифт жирным */
+            color: #333; /* Изменяем цвет текста */
         }
-        .form-group input {
-            margin-right: 10px;
+        .form-group input, .form-group select {
+            font-family: Arial, sans-serif; /* Изменяем шрифт на Arial */
+            font-size: 18px; /* Увеличиваем размер шрифта для элементов ввода */
+            height: 40px; /* Устанавливаем высоту элементов ввода */
+            padding: 5px 10px; /* Устанавливаем отступы внутри элементов ввода */
+            width: 100%; /* Устанавливаем ширину элементов ввода */
+            box-sizing: border-box; /* Включаем отступы и границы в ширину элемента */
+            border: 1px solid #ccc; /* Добавляем границу */
+            border-radius: 4px; /* Закругляем углы */
         }
+        .form-group button {
+            font-size: 18px; /* Увеличиваем размер шрифта для кнопок */
+            justify-self: left; /* Выравниваем кнопки по правому краю */
+            color: white; /* Изменяем цвет текста на белый для лучшей читаемости */
+            padding: 5px 10px; /* Устанавливаем отступы внутри кнопок */
+            border: 1px solid #ccc; /* Добавляем границу */
+            background-color: gray; /* Изменяем цвет фона кнопки на синий */
+            border-radius: 4px; /* Закругляем углы */
+            cursor: pointer; /* Изменяем курсор при наведении на кнопку */
+        }
+        .form-group button:hover {
+            background-color: #e2e2e2; /* Изменяем цвет фона при наведении */
+        }
+        .button-green {
+            font-size: 18px; /* Увеличиваем размер шрифта для текста на кнопке */
+            background-color: green; /* Изменяем цвет фона кнопки на зеленый */
+            color: white; /* Изменяем цвет текста на белый для лучшей читаемости */
+            border-radius: 4px; /* Закругляем углы */
+            border: none; /* Убираем границу кнопки */
+            padding: 10px 20px; /* Добавляем отступы для кнопки */
+            cursor: pointer; /* Изменяем курсор при наведении на кнопку */
+        }
+        .button-red {
+            font-size: 18px; /* Увеличиваем размер шрифта для текста на кнопке */
+            background-color: red; /* Изменяем цвет фона кнопки на красный */
+            color: white; /* Изменяем цвет текста на белый для лучшей читаемости */
+            border-radius: 4px; /* Закругляем углы */
+            border: none; /* Убираем границу кнопки */
+            padding: 10px 20px; /* Добавляем отступы для кнопки */
+            cursor: pointer; /* Изменяем курсор при наведении на кнопку */
+        }
+        .button-report {
+            font-size: 18px; /* Увеличиваем размер шрифта для текста на кнопке */
+            background-color: gray; /* Изменяем цвет фона кнопки на синий */
+            border-radius: 4px; /* Закругляем углы */
+            color: white; /* Изменяем цвет текста на белый для лучшей читаемости */
+            border: none; /* Убираем границу кнопки */
+            padding: 10px 20px; /* Добавляем отступы для кнопки */
+            cursor: pointer; /* Изменяем курсор при наведении на кнопку */
+        }
+
     </style>
     <script>
         $(function() {
@@ -72,6 +125,12 @@
                 var totalPrice = quantityPcs * pricePerUnit;
                 $("#id_total_price").val(totalPrice.toFixed(2));
             }
+
+            // JavaScript для перенаправления на страницу отчета
+            document.getElementById("generate-report-button").onclick = function() {
+                window.location.href = "{% url 'report' %}";
+            };
+
         });
     </script>
 </head>
@@ -93,12 +152,12 @@
         <div class="form-group">
             <label for="id_category">Category:</label>
             {{ form.category }}
-            <button type="button" onclick="window.location.href='{% url 'add_category' %}'">Add Category</button>
+            <button type="button" onclick="window.location.href='{% url 'add_category' %}'">Add</button>
         </div>
         <div class="form-group">
             <label for="id_subcategory">Subcategory:</label>
             {{ form.subcategory }}
-            <button type="button" onclick="window.location.href='{% url 'add_subcategory' %}'">Add Subcategory</button>
+            <button type="button" onclick="window.location.href='{% url 'add_subcategory' %}'">Add</button>
         </div>
         <div class="form-group">
             <label for="id_quantity_kg">Quantity (kg):</label>
@@ -120,10 +179,10 @@
             <label for="id_purchase_date">Purchase Date:</label>
             {{ form.purchase_date }}
         </div>
-        <button type="submit">Save</button>
-        <button type="button" id="clear-button">Clear</button>
+        <button type="submit" class="button-green">Save</button>
+        <button type="button" id="clear-button" class="button-red">Clear</button>
     </form>
     <br>
-    <a href="{% url 'report' %}">Generate Report</a>
+    <button id="generate-report-button" class="button-report">Generate Report</button>
 </body>
 </html>

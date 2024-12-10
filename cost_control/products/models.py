@@ -25,7 +25,7 @@ class Subcategory(models.Model):
 class Product(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     subcategory = models.ForeignKey(Subcategory, on_delete=models.CASCADE)
-    barcode = models.CharField(max_length=13)
+    barcode = models.CharField(max_length=13, null=True, blank=True)
     name = models.CharField(max_length=200)
     quantity_kg = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     quantity_pcs = models.DecimalField(max_digits=10, decimal_places=2)

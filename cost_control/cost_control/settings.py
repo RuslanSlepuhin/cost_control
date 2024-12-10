@@ -29,6 +29,7 @@ ALLOWED_HOSTS = [
     '6690-178-122-255-37.ngrok-free.app',
     '127.0.0.1'
 ]
+CSRF_TRUSTED_ORIGINS = ['https://6690-178-122-255-37.ngrok-free.app']
 
 
 # Application definition
