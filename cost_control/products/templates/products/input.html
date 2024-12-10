@@ -5,12 +5,73 @@
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <style>
+        .form-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .form-group label {
+            margin-right: 10px;
+        }
+        .form-group input {
+            margin-right: 10px;
+        }
+    </style>
     <script>
         $(function() {
             $("#id_barcode").autocomplete({
                 source: "{% url 'autocomplete_barcode' %}",
                 minLength: 3,
+                select: function(event, ui) {
+                    $("#id_barcode").val(ui.item.value);
+                    $("#id_category").val(ui.item.category_id); // Устанавливаем ID категории
+                    $("#id_subcategory").val(ui.item.subcategory_id); // Устанавливаем ID подкатегории
+                    $("#id_name").val(ui.item.name);
+                    $("#id_price_per_unit").val(ui.item.price_per_unit);
+                    $("#id_quantity_kg").val(ui.item.quantity_kg);
+                    calculateTotalPrice();
+                    return false;
+                }
+            }).autocomplete("instance")._renderItem = function(ul, item) {
+                return $("<li>")
+                    .append("<div>" + item.label + "</div>")
+                    .appendTo(ul);
+            };
+
+            $("#id_name").autocomplete({
+                source: "{% url 'autocomplete_name' %}",
+                minLength: 3,
+                select: function(event, ui) {
+                    $("#id_barcode").val(ui.item.barcode);
+                    $("#id_category").val(ui.item.category_id); // Устанавливаем ID категории
+                    $("#id_subcategory").val(ui.item.subcategory_id); // Устанавливаем ID подкатегории
+                    $("#id_name").val(ui.item.value);
+                    $("#id_price_per_unit").val(ui.item.price_per_unit);
+                    $("#id_quantity_kg").val(ui.item.quantity_kg);
+                    calculateTotalPrice();
+                    return false;
+                }
+            }).autocomplete("instance")._renderItem = function(ul, item) {
+                return $("<li>")
+                    .append("<div>" + item.label + "</div>")
+                    .appendTo(ul);
+            };
+
+            $("#clear-button").click(function() {
+                $("#product-form")[0].reset();
             });
+
+            $("#id_quantity_pcs, #id_price_per_unit").on("input", function() {
+                calculateTotalPrice();
+            });
+
+            function calculateTotalPrice() {
+                var quantityPcs = parseFloat($("#id_quantity_pcs").val().replace(',', '.')) || 0;
+                var pricePerUnit = parseFloat($("#id_price_per_unit").val().replace(',', '.')) || 0;
+                var totalPrice = quantityPcs * pricePerUnit;
+                $("#id_total_price").val(totalPrice.toFixed(2));
+            }
         });
     </script>
 </head>
@@ -19,10 +80,50 @@
     {% if success %}
         <p>Product saved successfully!</p>
     {% endif %}
-    <form method="post">
+    <form id="product-form" method="post">
         {% csrf_token %}
-        {{ form.as_p }}
+        <div class="form-group">
+            <label for="id_barcode">Barcode:</label>
+            {{ form.barcode }}
+        </div>
+        <div class="form-group">
+            <label for="id_name">Name:</label>
+            {{ form.name }}
+        </div>
+        <div class="form-group">
+            <label for="id_category">Category:</label>
+            {{ form.category }}
+            <button type="button" onclick="window.location.href='{% url 'add_category' %}'">Add Category</button>
+        </div>
+        <div class="form-group">
+            <label for="id_subcategory">Subcategory:</label>
+            {{ form.subcategory }}
+            <button type="button" onclick="window.location.href='{% url 'add_subcategory' %}'">Add Subcategory</button>
+        </div>
+        <div class="form-group">
+            <label for="id_quantity_kg">Quantity (kg):</label>
+            {{ form.quantity_kg }}
+        </div>
+        <div class="form-group">
+            <label for="id_quantity_pcs">Quantity (pcs):</label>
+            {{ form.quantity_pcs }}
+        </div>
+        <div class="form-group">
+            <label for="id_price_per_unit">Price per Unit:</label>
+            {{ form.price_per_unit }}
+        </div>
+        <div class="form-group">
+            <label for="id_total_price">Total Price:</label>
+            {{ form.total_price }}
+        </div>
+        <div class="form-group">
+            <label for="id_purchase_date">Purchase Date:</label>
+            {{ form.purchase_date }}
+        </div>
         <button type="submit">Save</button>
+        <button type="button" id="clear-button">Clear</button>
     </form>
+    <br>
+    <a href="{% url 'report' %}">Generate Report</a>
 </body>
 </html>
