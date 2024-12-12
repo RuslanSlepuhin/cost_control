@@ -1,0 +1,112 @@
+body {
+    margin-left: 50px;
+    font-size: 20px; /* Увеличиваем размер шрифта для всего тела страницы */
+}
+
+#chart-container {
+    position: relative;
+    width: 35%; /* Ширина контейнера */
+    height: 20vh; /* 1/5 высоты экрана */
+    margin-left: 5px; /* Уменьшенный отступ слева */
+    margin-top: 20px; /* Отступ сверху */
+}
+
+button[type="submit"] {
+    font-size: 18px; /* Увеличиваем размер шрифта для текста на кнопке */
+    background-color: green; /* Изменяем цвет фона кнопки на зеленый */
+    color: white; /* Изменяем цвет текста на белый для лучшей читаемости */
+    border: none; /* Убираем границу кнопки */
+    padding: 10px 20px; /* Добавляем отступы для кнопки */
+    cursor: pointer; /* Изменяем курсор при наведении на кнопку */
+    border-radius: 4px; /* Закругляем углы */
+}
+
+#myChart {
+    width: 100%;
+    height: 100%;
+}
+
+.form-group {
+    display: grid;
+    grid-template-columns: 150px 1fr;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 9px;
+    font-size: 20px; /* Увеличиваем размер шрифта для всего тела страницы */
+}
+
+.form-group label {
+    font-size: 20px; /* Увеличиваем размер шрифта для меток */
+}
+
+table {
+    border-collapse: collapse; /* Убираем двойные границы */
+    width: 45%; /* Устанавливаем ширину таблицы */
+    margin-bottom: 20px; /* Добавляем отступ снизу */
+    font-size: 18px; /* Увеличиваем размер шрифта для всей таблицы */
+}
+
+th, td {
+    border: 1px solid #ddd; /* Добавляем тонкие границы */
+    padding: 6px; /* Добавляем отступы внутри ячеек */
+    text-align: left; /* Выравниваем текст по левому краю */
+}
+
+th {
+    background-color: #f2f2f2; /* Добавляем фон для заголовков */
+}
+
+tr:nth-child(even) {
+    background-color: #f9f9f9; /* Добавляем чередующийся фон для строк */
+}
+
+tr:hover {
+    background-color: #f1f1f1; /* Добавляем эффект наведения для строк */
+}
+
+select {
+    font-size: 18px; /* Увеличиваем размер шрифта */
+    padding: 5px; /* Добавляем отступы внутри элемента */
+    border: 1px solid #ccc; /* Добавляем границу */
+    border-radius: 4px; /* Закругляем углы */
+    background-color: #fff; /* Устанавливаем фон */
+    color: #333; /* Устанавливаем цвет текста */
+    appearance: none; /* Убираем стандартное оформление */
+    -webkit-appearance: none; /* Убираем стандартное оформление для WebKit */
+    -moz-appearance: none; /* Убираем стандартное оформление для Firefox */
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="6"><path fill="%23333" d="M0 0l5 5 5-5z"/></svg>'); /* Добавляем стрелку */
+    background-repeat: no-repeat; /* Убираем повторение фона */
+    background-position: right 10px center; /* Позиционируем стрелку */
+    width: 20%; /* Устанавливаем ширину элемента */
+}
+
+select:focus {
+    border-color: #007bff; /* Изменяем цвет границы при фокусе */
+    outline: none; /* Убираем стандартное оформление фокуса */
+}
+
+input[type="date"] {
+    font-size: 18px; /* Увеличиваем размер шрифта */
+    padding: 8px; /* Добавляем отступы внутри элемента */
+    border: 1px solid #ddd; /* Добавляем тонкие границы */
+    border-radius: 4px; /* Закругляем углы */
+    background-color: #fff; /* Устанавливаем белый фон */
+    color: #333; /* Устанавливаем цвет текста */
+    width: 20%; /* Устанавливаем ширину элемента */
+    box-sizing: border-box; /* Включаем отступы и границы в ширину элемента */
+}
+
+input[type="date"]:focus {
+    border-color: #007bff; /* Изменяем цвет границы при фокусе */
+    outline: none; /* Убираем стандартное оформление фокуса */
+}
+
+.button-gray {
+    font-size: 18px; /* Увеличиваем размер шрифта для текста на кнопке */
+    background-color: gray; /* Изменяем цвет фона кнопки на серый */
+    color: white; /* Изменяем цвет текста на белый для лучшей читаемости */
+    border: none; /* Убираем границу кнопки */
+    border-radius: 4px; /* Закругляем углы */
+    padding: 10px 20px; /* Добавляем отступы для кнопки */
+    cursor: pointer; /* Изменяем курсор при наведении на кнопку */
+}

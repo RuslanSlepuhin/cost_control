@@ -3,113 +3,8 @@
 <head>
     <title>Report</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        body {
-            font-size: 20px; /* Увеличиваем размер шрифта для всего тела страницы */
-        }
-        #chart-container {
-            position: relative;
-            width: 35%; /* Ширина контейнера */
-            height: 20vh; /* 1/5 высоты экрана */
-            margin-left: 5px; /* Уменьшенный отступ слева */
-            margin-top: 20px; /* Отступ сверху */
-        }
-        button[type="submit"] {
-            font-size: 18px; /* Увеличиваем размер шрифта для текста на кнопке */
-            background-color: green; /* Изменяем цвет фона кнопки на зеленый */
-            color: white; /* Изменяем цвет текста на белый для лучшей читаемости */
-            border: none; /* Убираем границу кнопки */
-            padding: 10px 20px; /* Добавляем отступы для кнопки */
-            cursor: pointer; /* Изменяем курсор при наведении на кнопку */
-            border-radius: 4px; /* Закругляем углы */
-
-        }
-        #myChart {
-            width: 100%;
-            height: 100%;
-        }
-        .form-group {
-            display: grid;
-            grid-template-columns: 150px 1fr;
-            gap: 10px;
-            align-items: center;
-            margin-bottom: 9px;
-            font-size: 20px; /* Увеличиваем размер шрифта для всего тела страницы */
-        }
-        .form-group label {
-            font-size: 20px; /* Увеличиваем размер шрифта для меток */
-        }
-        table {
-            border-collapse: collapse; /* Убираем двойные границы */
-            width: 45%; /* Устанавливаем ширину таблицы */
-            margin-bottom: 20px; /* Добавляем отступ снизу */
-            font-size: 18px; /* Увеличиваем размер шрифта для всей таблицы */
-        }
-
-        th, td {
-            border: 1px solid #ddd; /* Добавляем тонкие границы */
-            padding: 6px; /* Добавляем отступы внутри ячеек */
-            text-align: left; /* Выравниваем текст по левому краю */
-        }
-
-        th {
-            background-color: #f2f2f2; /* Добавляем фон для заголовков */
-        }
-
-        tr:nth-child(even) {
-            background-color: #f9f9f9; /* Добавляем чередующийся фон для строк */
-        }
-
-        tr:hover {
-            background-color: #f1f1f1; /* Добавляем эффект наведения для строк */
-        }
-        select {
-            font-size: 18px; /* Увеличиваем размер шрифта */
-            padding: 5px; /* Добавляем отступы внутри элемента */
-            border: 1px solid #ccc; /* Добавляем границу */
-            border-radius: 4px; /* Закругляем углы */
-            background-color: #fff; /* Устанавливаем фон */
-            color: #333; /* Устанавливаем цвет текста */
-            appearance: none; /* Убираем стандартное оформление */
-            -webkit-appearance: none; /* Убираем стандартное оформление для WebKit */
-            -moz-appearance: none; /* Убираем стандартное оформление для Firefox */
-            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="6"><path fill="%23333" d="M0 0l5 5 5-5z"/></svg>'); /* Добавляем стрелку */
-            background-repeat: no-repeat; /* Убираем повторение фона */
-            background-position: right 10px center; /* Позиционируем стрелку */
-            width: 20%; /* Устанавливаем ширину элемента */
-        }
-
-        select:focus {
-            border-color: #007bff; /* Изменяем цвет границы при фокусе */
-            outline: none; /* Убираем стандартное оформление фокуса */
-        }
-        input[type="date"] {
-            font-size: 18px; /* Увеличиваем размер шрифта */
-            padding: 8px; /* Добавляем отступы внутри элемента */
-            border: 1px solid #ddd; /* Добавляем тонкие границы */
-            border-radius: 4px; /* Закругляем углы */
-            background-color: #fff; /* Устанавливаем белый фон */
-            color: #333; /* Устанавливаем цвет текста */
-            width: 20%; /* Устанавливаем ширину элемента */
-            box-sizing: border-box; /* Включаем отступы и границы в ширину элемента */
-        }
-
-        input[type="date"]:focus {
-            border-color: #007bff; /* Изменяем цвет границы при фокусе */
-            outline: none; /* Убираем стандартное оформление фокуса */
-        }
-        .button-gray {
-            font-size: 18px; /* Увеличиваем размер шрифта для текста на кнопке */
-            background-color: gray; /* Изменяем цвет фона кнопки на серый */
-            color: white; /* Изменяем цвет текста на белый для лучшей читаемости */
-            border: none; /* Убираем границу кнопки */
-            border-radius: 4px; /* Закругляем углы */
-            padding: 10px 20px; /* Добавляем отступы для кнопки */
-            cursor: pointer; /* Изменяем курсор при наведении на кнопку */
-        }
-
-
-    </style>
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/report_styles.css' %}">
 </head>
 <body>
     <h1>Report</h1>
@@ -118,6 +13,7 @@
         <div class="form-group">
             <label for="category">Category:</label>
             <select id="category" name="category">
+                <option value="">All Categories</option> <!-- Добавляем опцию "All Categories" -->
                 {% for category in categories %}
                     <option value="{{ category.name }}" {% if category.name == selected_category %}selected{% endif %}>{{ category.name }}</option>
                 {% endfor %}
@@ -134,7 +30,11 @@
         <button type="submit">Generate Report</button>
     </form>
     <br>
-    <h2>{{ selected_category }} Category Report for Selected Period</h2>
+    {% if selected_category == '' %}
+        <h2>Report for All Categories for Selected Period</h2>
+    {% else %}
+        <h2>{{ selected_category }} Category Report for Selected Period</h2>
+    {% endif %}
     <table border="1">
         <tr>
             <th>Subcategory</th>
@@ -155,6 +55,10 @@
     <div id="chart-container">
         <canvas id="myChart"></canvas>
     </div>
+    <br>
+    <button id="back-to-input-button" class="button-gray">Input Products</button>
+    <button id="go-to-product-list" class="button-gray">Product List</button>
+    <button id="export-button" class="button-gray">Export Data</button> <!-- Добавляем кнопку для экспорта данных -->
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             var ctx = document.getElementById('myChart').getContext('2d');
@@ -176,7 +80,14 @@
                             'rgba(255, 206, 86, 0.2)',
                             'rgba(75, 192, 192, 0.2)',
                             'rgba(153, 102, 255, 0.2)',
-                            'rgba(255, 159, 64, 0.2)'
+                            'rgba(255, 159, 64, 0.2)',
+                            'rgba(237, 125, 49, 0.2)',
+                            'rgba(102, 187, 106, 0.2)',
+                            'rgba(147, 112, 219, 0.2)',
+                            'rgba(240, 173, 78, 0.2)',
+                            'rgba(211, 84, 0, 0.2)',
+                            'rgba(0, 114, 178, 0.2)',
+                            'rgba(0, 121, 107, 0.2)'
                         ],
                         borderColor: [
                             'rgba(255, 99, 132, 1)',
@@ -184,7 +95,14 @@
                             'rgba(255, 206, 86, 1)',
                             'rgba(75, 192, 192, 1)',
                             'rgba(153, 102, 255, 1)',
-                            'rgba(255, 159, 64, 1)'
+                            'rgba(255, 159, 64, 1)',
+                            'rgba(237, 125, 49, 1)',
+                            'rgba(102, 187, 106, 1)',
+                            'rgba(147, 112, 219, 1)',
+                            'rgba(240, 173, 78, 1)',
+                            'rgba(211, 84, 0, 1)',
+                            'rgba(0, 114, 178, 1)',
+                            'rgba(0, 121, 107, 1)'
                         ],
                         borderWidth: 1
                     }]
@@ -209,14 +127,21 @@
                 },
             });
         });
-    </script>
-    <br>
-    <button id="back-to-input-button" class="button-gray">Back to Input</button>
-    <script>
+
         // JavaScript для перенаправления на страницу ввода
         document.getElementById("back-to-input-button").onclick = function() {
             window.location.href = "{% url 'input_product' %}";
         };
+        // JavaScript для перенаправления на страницу с таблицей
+        document.getElementById("go-to-product-list").onclick = function() {
+            window.location.href = "{% url 'product_list' %}";
+        };
+        // JavaScript для экспорта данных
+        document.getElementById("export-button").onclick = function() {
+            // Логика для экспорта данных
+            alert("Export functionality is not implemented yet.");
+        };
     </script>
 </body>
 </html>
+

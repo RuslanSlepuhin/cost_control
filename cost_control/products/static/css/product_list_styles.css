@@ -1,0 +1,73 @@
+.table-fixed thead th {
+    position: sticky;
+    top: 0;
+    background-color: #fff;
+    z-index: 1;
+}
+.header-buttons {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+.header-buttons h1 {
+    margin: 0;
+}
+.narrow-table-container {
+    width: 90%; /* Уменьшаем ширину контейнера */
+    overflow-x: auto; /* Добавляем горизонтальную прокрутку, если нужно */
+}
+table {
+    border-collapse: collapse; /* Убираем двойные границы */
+    width: 100%; /* Устанавливаем ширину таблицы */
+    margin-bottom: 20px; /* Добавляем отступ снизу */
+    font-size: 12px; /* Увеличиваем размер шрифта для всей таблицы */
+}
+th, td {
+    border: 1px solid #ddd; /* Добавляем тонкие границы */
+    padding: 3px; /* Уменьшаем отступы внутри ячеек */
+    text-align: left; /* Выравниваем текст по левому краю */
+    line-height: 1; /* Уменьшаем высоту строк */
+    white-space: nowrap; /* Предотвращаем перенос текста */
+    overflow: hidden; /* Обрываем текст, который не помещается */
+    text-overflow: ellipsis; /* Добавляем многоточие для обрезанного текста */
+}
+th {
+    background-color: #f2f2f2; /* Добавляем фон для заголовков */
+}
+tr:nth-child(even) {
+    background-color: #f9f9f9; /* Добавляем чередующийся фон для строк */
+}
+tr:hover {
+    background-color: #f1f1f1; /* Добавляем эффект наведения для строк */
+}
+.actions {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+}
+.btn-custom-edit, .btn-custom-delete {
+    background-color: blue !important; /* Измененный цвет для кнопки Edit */
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 10px;
+    margin: 0 2px; /* Уменьшаем отступы сверху и снизу до 0 */
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.btn-custom-edit:hover {
+    background-color: #45a049 !important;
+}
+
+.btn-custom-delete {
+    background-color: red !important; /* Красный цвет для кнопки Delete */
+}
+
+.btn-custom-delete:hover {
+    background-color: #d32f2f !important;
+}

@@ -1,9 +1,8 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from .forms import ProductForm, CategoryForm, SubcategoryForm
 from .models import Product, Category, Subcategory
 from django.db.models import Sum, Count
 from django.utils import timezone
-from django.http import JsonResponse
 from django.http import JsonResponse
 from .models import Subcategory
 
@@ -12,9 +11,9 @@ def input_product(request):
         form = ProductForm(request.POST)
         if form.is_valid():
             form.save()
-            return render(request, 'products/input.html', {'form': ProductForm(), 'success': True})
+            return render(request, 'products/input.html', {'form': ProductForm(initial={'purchase_date': timezone.now().date()}), 'success': True})
     else:
-        form = ProductForm()
+        form = ProductForm(initial={'purchase_date': timezone.now().date()})
     return render(request, 'products/input.html', {'form': form})
 
 def add_category(request):
@@ -59,7 +58,9 @@ def autocomplete_barcode(request):
 
 def autocomplete_name(request):
     query = request.GET.get('term', '')
+    print('query', query)
     products = Product.objects.filter(name__icontains=query).values('name').annotate(count=Count('name')).order_by('-count')[:10]
+    print(products)
     results = []
     for product in products:
         latest_product = Product.objects.filter(name=product['name']).order_by('-created_at').first()
@@ -79,7 +80,9 @@ def autocomplete_name(request):
 
 def report(request):
     categories = Category.objects.all()
-    selected_category = request.GET.get('category', 'Food')
+    selected_category = request.GET.get('category', '')
+    if selected_category == '':
+        selected_category = None
 
     # Обработка дат
     start_date_str = request.GET.get('start_date')
@@ -95,14 +98,19 @@ def report(request):
         start_date = timezone.make_aware(timezone.datetime(current_year, current_month, 1))
         end_date = timezone.make_aware(timezone.datetime(current_year, current_month + 1, 1)) if current_month != 12 else timezone.make_aware(timezone.datetime(current_year + 1, 1, 1))
 
-    report_data = Product.objects.filter(
-        category__name=selected_category,
-        created_at__gte=start_date,
-        created_at__lt=end_date
-    ).values('subcategory__name').annotate(total_price_sum=Sum('total_price')).order_by('subcategory__name')
+    if selected_category is None:
+        report_data = Product.objects.filter(
+            created_at__gte=start_date,
+            created_at__lt=end_date
+        ).values('subcategory__name').annotate(total_price_sum=Sum('total_price')).order_by('subcategory__name')
+    else:
+        report_data = Product.objects.filter(
+            category__name=selected_category,
+            created_at__gte=start_date,
+            created_at__lt=end_date
+        ).values('subcategory__name').annotate(total_price_sum=Sum('total_price')).order_by('subcategory__name')
 
     total_sum = Product.objects.filter(
-        category__name=selected_category,
         created_at__gte=start_date,
         created_at__lt=end_date
     ).aggregate(total_price_sum=Sum('total_price'))['total_price_sum'] or 0
@@ -110,7 +118,7 @@ def report(request):
     return render(request, 'products/report.html', {
         'food_report': report_data,
         'categories': categories,
-        'selected_category': selected_category,
+        'selected_category': selected_category if selected_category else "All Categories",
         'start_date': start_date.strftime('%Y-%m-%d'),
         'end_date': (end_date - timezone.timedelta(days=1)).strftime('%Y-%m-%d'),
         'total_sum': total_sum
@@ -121,3 +129,25 @@ def load_subcategories(request):
     subcategories = Subcategory.objects.filter(category_id=category_id).all()
     return JsonResponse(list(subcategories.values('id', 'name')), safe=False)
 
+def product_list(request):
+    # Получаем все записи из модели Product и сортируем их по дате создания, категории и субкатегории
+    products = Product.objects.all().order_by('purchase_date', 'category__name', 'subcategory__name')
+    return render(request, 'products/product_list.html', {'products': products})
+
+def edit_product(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
+    if request.method == 'POST':
+        form = ProductForm(request.POST, instance=product)
+        if form.is_valid():
+            form.save()
+            return redirect('product_list')
+    else:
+        form = ProductForm(instance=product)
+    return render(request, 'products/edit_product.html', {'form': form, 'product': product})
+
+def delete_product(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
+    if request.method == 'POST':
+        product.delete()
+        return redirect('product_list')
+    return render(request, 'products/delete_product.html', {'product': product})

@@ -32,7 +32,7 @@ class Product(models.Model):
     price_per_unit = models.DecimalField(max_digits=10, decimal_places=2)
     total_price = models.DecimalField(max_digits=10, decimal_places=2)
     created_at = models.DateTimeField(auto_now_add=True)
-    purchase_date = models.DateField(default=timezone.now)
+    purchase_date = models.DateField()
 
     def __str__(self):
         return self.name
