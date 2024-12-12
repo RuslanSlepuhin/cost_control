@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Report</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/report_styles.css' %}">
+</head>
+<body>
+    <h1>Report</h1>
+    <form id="report-form" method="get">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="category">Category:</label>
+            <select id="category" name="category">
+                <option value="">All Categories</option> <!-- Добавляем опцию "All Categories" -->
+                {% for category in categories %}
+                    <option value="{{ category.name }}" {% if category.name == selected_category %}selected{% endif %}>{{ category.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="start_date">Start Date:</label>
+            <input type="date" id="start_date" name="start_date" value="{{ start_date }}">
+        </div>
+        <div class="form-group">
+            <label for="end_date">End Date:</label>
+            <input type="date" id="end_date" name="end_date" value="{{ end_date }}">
+        </div>
+        <button type="submit">Generate Report</button>
+    </form>
+    <br>
+    {% if selected_category == '' %}
+        <h2>Report for All Categories for Selected Period</h2>
+    {% else %}
+        <h2>{{ selected_category }} Category Report for Selected Period</h2>
+    {% endif %}
+    <table border="1">
+        <tr>
+            <th>Subcategory</th>
+            <th>Total Price</th>
+        </tr>
+        {% for item in food_report %}
+        <tr>
+            <td>{{ item.subcategory__name }}</td>
+            <td>{{ item.total_price_sum|floatformat:2 }}</td>
+        </tr>
+        {% endfor %}
+        <tr>
+            <td><strong>Total</strong></td>
+            <td><strong>{{ total_sum|floatformat:2 }}</strong></td>
+        </tr>
+    </table>
+    <br>
+    <div id="chart-container">
+        <canvas id="myChart"></canvas>
+    </div>
+    <br>
+    <button id="back-to-input-button" class="button-gray">Input Products</button>
+    <button id="go-to-product-list" class="button-gray">Product List</button>
+    <button id="export-button" class="button-gray">Export Data</button> <!-- Добавляем кнопку для экспорта данных -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var ctx = document.getElementById('myChart').getContext('2d');
+            var labels = [{% for item in food_report %}'{{ item.subcategory__name }}',{% endfor %}];
+            var data = [{% for item in food_report %}{{ item.total_price_sum|floatformat:2 }},{% endfor %}];
+            var total = data.reduce((a, b) => a + b, 0);
+            var percentages = data.map(value => (value / total) * 100);
+
+            var myChart = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Total Price Distribution',
+                        data: percentages,
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.2)',
+                            'rgba(54, 162, 235, 0.2)',
+                            'rgba(255, 206, 86, 0.2)',
+                            'rgba(75, 192, 192, 0.2)',
+                            'rgba(153, 102, 255, 0.2)',
+                            'rgba(255, 159, 64, 0.2)',
+                            'rgba(237, 125, 49, 0.2)',
+                            'rgba(102, 187, 106, 0.2)',
+                            'rgba(147, 112, 219, 0.2)',
+                            'rgba(240, 173, 78, 0.2)',
+                            'rgba(211, 84, 0, 0.2)',
+                            'rgba(0, 114, 178, 0.2)',
+                            'rgba(0, 121, 107, 0.2)'
+                        ],
+                        borderColor: [
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(255, 206, 86, 1)',
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(153, 102, 255, 1)',
+                            'rgba(255, 159, 64, 1)',
+                            'rgba(237, 125, 49, 1)',
+                            'rgba(102, 187, 106, 1)',
+                            'rgba(147, 112, 219, 1)',
+                            'rgba(240, 173, 78, 1)',
+                            'rgba(211, 84, 0, 1)',
+                            'rgba(0, 114, 178, 1)',
+                            'rgba(0, 121, 107, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'left', // Перемещаем легенду на левую сторону
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.label || '';
+                                    let value = context.raw || 0;
+                                    return `${label}: ${value.toFixed(2)}%`;
+                                }
+                            }
+                        }
+                    }
+                },
+            });
+        });
+
+        // JavaScript для перенаправления на страницу ввода
+        document.getElementById("back-to-input-button").onclick = function() {
+            window.location.href = "{% url 'input_product' %}";
+        };
+        // JavaScript для перенаправления на страницу с таблицей
+        document.getElementById("go-to-product-list").onclick = function() {
+            window.location.href = "{% url 'product_list' %}";
+        };
+        // JavaScript для экспорта данных
+        document.getElementById("export-button").onclick = function() {
+            // Логика для экспорта данных
+            alert("Export functionality is not implemented yet.");
+        };
+    </script>
+</body>
+</html>
+

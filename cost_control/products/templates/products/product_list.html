@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product List</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/product_list_styles.css' %}">
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="header-buttons">
+            <h1>Product List</h1>
+            <a href="{% url 'input_product' %}" class="btn btn-success btn-sm">Add Product</a>
+        </div>
+        <div class="table-responsive narrow-table-container">
+            <table class="table table-bordered table-fixed">
+                <thead>
+                    <tr>
+                        <th>Purchase Date</th>
+                        <th>Category</th>
+                        <th>Subcategory</th>
+                        <th>Name</th>
+                        <th>Quantity (kg)</th>
+                        <th>Quantity (pcs)</th>
+                        <th>Price per Unit</th>
+                        <th>Total Price</th>
+                        <th>Actions</th> <!-- Добавляем столбец для кнопок -->
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for product in products %}
+                    <tr>
+                        <td>{{ product.purchase_date }}</td>
+                        <td>{{ product.category.name }}</td>
+                        <td>{{ product.subcategory.name }}</td>
+                        <td>{% if product.name %}{{ product.name }}{% else %}-{% endif %}</td>
+                        <td>{% if product.quantity_kg %}{{ product.quantity_kg }}{% else %}-{% endif %}</td>
+                        <td>{% if product.quantity_pcs %}{{ product.quantity_pcs }}{% else %}-{% endif %}</td>
+                        <td>{% if product.price_per_unit %}{{ product.price_per_unit }}{% else %}-{% endif %}</td>
+                        <td>{% if product.total_price %}{{ product.total_price }}{% else %}-{% endif %}</td>
+                        <td class="actions">
+                            <a href="{% url 'edit_product' product.id %}" class="btn btn-primary btn-sm btn-custom-edit">Edit</a>
+                            <a href="{% url 'delete_product' product.id %}" class="btn btn-danger btn-sm btn-custom-delete">Delete</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>
+
