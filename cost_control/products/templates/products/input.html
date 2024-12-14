@@ -15,6 +15,7 @@
                 select: function(event, ui) {
                     $("#id_barcode").val(ui.item.value);
                     $("#id_category").val(ui.item.category_id); // Устанавливаем ID категории
+                    loadSubcategories(ui.item.category_id); // Загружаем подкатегории
                     $("#id_subcategory").val(ui.item.subcategory_id); // Устанавливаем ID подкатегории
                     $("#id_name").val(ui.item.name);
                     $("#id_price_per_unit").val(ui.item.price_per_unit);
@@ -34,6 +35,7 @@
                 select: function(event, ui) {
                     $("#id_barcode").val(ui.item.barcode);
                     $("#id_category").val(ui.item.category_id); // Устанавливаем ID категории
+                    loadSubcategories(ui.item.category_id); // Загружаем подкатегории
                     $("#id_subcategory").val(ui.item.subcategory_id); // Устанавливаем ID подкатегории
                     $("#id_name").val(ui.item.value);
                     $("#id_price_per_unit").val(ui.item.price_per_unit);
@@ -47,8 +49,49 @@
                     .appendTo(ul);
             };
 
+            // Проверяем, выбрана ли категория при загрузке страницы
+            var initialCategory = $("#id_category").val();
+            if (initialCategory) {
+                loadSubcategories(initialCategory);
+            } else {
+                clearSubcategories();
+            }
+
+            $("#id_category").change(function() {
+                var selectedCategory = $(this).val();
+                if (selectedCategory) {
+                    loadSubcategories(selectedCategory);
+                } else {
+                    clearSubcategories();
+                }
+            });
+
+            function loadSubcategories(category_id) {
+                $.ajax({
+                    url: "{% url 'get_subcategories' %}",
+                    data: {
+                        'category_id': category_id
+                    },
+                    success: function(data) {
+                        var subcategorySelect = $("#id_subcategory");
+                        subcategorySelect.empty();
+                        subcategorySelect.append('<option value="">---------</option>');
+                        $.each(data, function(index, subcategory) {
+                            subcategorySelect.append('<option value="' + subcategory.id + '">' + subcategory.name + '</option>');
+                        });
+                    }
+                });
+            }
+
+            function clearSubcategories() {
+                var subcategorySelect = $("#id_subcategory");
+                subcategorySelect.empty();
+                subcategorySelect.append('<option value="">---------</option>');
+            }
+
             $("#clear-button").click(function() {
                 $("#product-form")[0].reset();
+                clearSubcategories(); // Очищаем подкатегории
             });
 
             $("#id_quantity_pcs, #id_price_per_unit").on("input", function() {

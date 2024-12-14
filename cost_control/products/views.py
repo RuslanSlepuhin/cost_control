@@ -1,7 +1,8 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from .forms import ProductForm, CategoryForm, SubcategoryForm
+from .google_drive_view import append_to_google_sheet
 from .models import Product, Category, Subcategory
 from django.db.models import Sum, Count
+from django.shortcuts import render, redirect, get_object_or_404
+from .forms import ProductForm, CategoryForm, SubcategoryForm
 from django.utils import timezone
 from django.http import JsonResponse
 from .models import Subcategory
@@ -10,8 +11,13 @@ def input_product(request):
     if request.method == 'POST':
         form = ProductForm(request.POST)
         if form.is_valid():
-            form.save()
-            return render(request, 'products/input.html', {'form': ProductForm(initial={'purchase_date': timezone.now().date()}), 'success': True})
+            product = form.save()
+            print("saved!!!!!!!!!!!!!!!!!", product)
+            append = append_to_google_sheet(product)
+            if append:
+                return render(request, 'products/input.html', {'form': ProductForm(initial={'purchase_date': timezone.now().date()}), 'success': True})
+            else:
+                return JsonResponse({"error": "Have not been saved to google sheet"})
     else:
         form = ProductForm(initial={'purchase_date': timezone.now().date()})
     return render(request, 'products/input.html', {'form': form})
@@ -100,20 +106,25 @@ def report(request):
 
     if selected_category is None:
         report_data = Product.objects.filter(
-            created_at__gte=start_date,
-            created_at__lt=end_date
-        ).values('subcategory__name').annotate(total_price_sum=Sum('total_price')).order_by('subcategory__name')
+            purchase_date__gte=start_date,
+            purchase_date__lt=end_date
+        ).values('subcategory__name').annotate(total_price_sum=Sum('total_price')).order_by('-total_price_sum', 'subcategory__name')
+
+        total_sum = Product.objects.filter(
+            purchase_date__gte=start_date,
+            purchase_date__lt=end_date
+        ).aggregate(total_price_sum=Sum('total_price'))['total_price_sum'] or 0
     else:
         report_data = Product.objects.filter(
             category__name=selected_category,
-            created_at__gte=start_date,
-            created_at__lt=end_date
-        ).values('subcategory__name').annotate(total_price_sum=Sum('total_price')).order_by('subcategory__name')
-
-    total_sum = Product.objects.filter(
-        created_at__gte=start_date,
-        created_at__lt=end_date
-    ).aggregate(total_price_sum=Sum('total_price'))['total_price_sum'] or 0
+            purchase_date__gte=start_date,
+            purchase_date__lt=end_date
+        ).values('subcategory__name').annotate(total_price_sum=Sum('total_price')).order_by('-total_price_sum', 'subcategory__name')
+        total_sum = Product.objects.filter(
+            category__name=selected_category,
+            purchase_date__gte=start_date,
+            purchase_date__lt=end_date
+        ).aggregate(total_price_sum=Sum('total_price'))['total_price_sum'] or 0
 
     return render(request, 'products/report.html', {
         'food_report': report_data,
@@ -131,7 +142,7 @@ def load_subcategories(request):
 
 def product_list(request):
     # Получаем все записи из модели Product и сортируем их по дате создания, категории и субкатегории
-    products = Product.objects.all().order_by('purchase_date', 'category__name', 'subcategory__name')
+    products = Product.objects.all().order_by('-purchase_date', 'category__name', 'subcategory__name')
     return render(request, 'products/product_list.html', {'products': products})
 
 def edit_product(request, product_id):
@@ -151,3 +162,8 @@ def delete_product(request, product_id):
         product.delete()
         return redirect('product_list')
     return render(request, 'products/delete_product.html', {'product': product})
+
+def get_subcategories(request):
+    category_id = request.GET.get('category_id')
+    subcategories = Subcategory.objects.filter(category_id=category_id).values('id', 'name')
+    return JsonResponse(list(subcategories), safe=False)

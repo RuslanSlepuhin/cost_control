@@ -29,6 +29,10 @@
         </div>
         <button type="submit">Generate Report</button>
     </form>
+    <div id="chart-container">
+        <canvas id="myChart"></canvas>
+    </div>
+    <br>
     <br>
     {% if selected_category == '' %}
         <h2>Report for All Categories for Selected Period</h2>
@@ -51,10 +55,6 @@
             <td><strong>{{ total_sum|floatformat:2 }}</strong></td>
         </tr>
     </table>
-    <br>
-    <div id="chart-container">
-        <canvas id="myChart"></canvas>
-    </div>
     <br>
     <button id="back-to-input-button" class="button-gray">Input Products</button>
     <button id="go-to-product-list" class="button-gray">Product List</button>
