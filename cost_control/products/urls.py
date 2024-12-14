@@ -1,5 +1,6 @@
 from django.urls import path
 from . import views
+from .google_drive_view import import_data_from_google_sheets
 
 urlpatterns = [
     path('input/', views.input_product, name='input_product'),
@@ -12,4 +13,6 @@ urlpatterns = [
     path('product_list/', views.product_list, name='product_list'),  # Новый URL-паттерн
     path('edit_product/<int:product_id>/', views.edit_product, name='edit_product'),
     path('delete_product/<int:product_id>/', views.delete_product, name='delete_product'),
+    path('get-sheet/', import_data_from_google_sheets, name='google_drive_import_data'),
+    path('get_subcategories/', views.get_subcategories, name='get_subcategories'),
 ]
