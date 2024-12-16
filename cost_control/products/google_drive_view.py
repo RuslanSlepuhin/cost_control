@@ -189,8 +189,9 @@ def append_to_google_sheet(product):
 
     # Вставляем данные в соответствующие ячейки
     try:
-        for i, value in enumerate(data, start=1):
-            sheet.update_cell(next_row, i, value)
+        # for i, value in enumerate(data, start=1):
+        #     sheet.update_cell(next_row, i, value)
+        sheet.append_row(data)
         return True
     except Exception as e:
         print(f"Error appending to Google Sheet: {e}")

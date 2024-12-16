@@ -39,6 +39,23 @@ button[type="submit"] {
     font-size: 20px; /* Увеличиваем размер шрифта для меток */
 }
 
+.total-sum {
+    display: inline-block;
+    margin-left: 20px;
+    font-weight: bold;
+}
+
+.form-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.form-actions button {
+    margin-right: 20px; /* Добавляем отступ справа от кнопки */
+}
+
 table {
     border-collapse: collapse; /* Убираем двойные границы */
     width: 45%; /* Устанавливаем ширину таблицы */
@@ -110,3 +127,12 @@ input[type="date"]:focus {
     padding: 10px 20px; /* Добавляем отступы для кнопки */
     cursor: pointer; /* Изменяем курсор при наведении на кнопку */
 }
+#chart-container {
+    display: flex;
+    justify-content: space-between;
+}
+#myChart, #barChart {
+    width: 45%;
+    height: 400px;
+}
+

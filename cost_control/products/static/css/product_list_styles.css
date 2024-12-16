@@ -1,73 +1,120 @@
-.table-fixed thead th {
-    position: sticky;
-    top: 0;
-    background-color: #fff;
-    z-index: 1;
+/* Контейнер таблицы с прокруткой */
+.narrow-table-container {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto; /* Включаем горизонтальную прокрутку */
+    margin-top: 20px;
+    display: block; /* Убедимся, что контейнер ведёт себя как блочный элемент */
 }
+
+/* Общий стиль таблицы */
+table {
+    table-layout: auto; /* Фиксированная ширина столбцов */
+    width: 100%; /* Ширина таблицы 100% */
+    border-collapse: collapse; /* Убираем двойные линии между ячейками */
+    background-color: #ffffff; /* Белый фон */
+    font-size: 14px; /* Размер шрифта для текста */
+}
+
+/* Стили заголовков таблицы */
+th {
+    background-color: #f8f9fa; /* Светлый фон для заголовков */
+    border: 1px solid #ddd; /* Границы */
+    padding: 10px; /* Внутренний отступ */
+    text-align: left; /* Выравнивание текста */
+    font-weight: bold; /* Жирный текст */
+    white-space: nowrap; /* Запрет переноса текста в заголовках */
+    overflow: hidden; /* Скрываем длинный текст */
+    text-overflow: ellipsis; /* Многоточие для длинных заголовков */
+}
+
+/* Стили ячеек таблицы */
+td {
+    border: 1px solid #ddd; /* Границы ячеек */
+    padding: 10px; /* Внутренний отступ */
+    text-align: left; /* Выравнивание текста */
+    vertical-align: top; /* Текст выравнивается по верхнему краю */
+    word-wrap: break-word; /* Перенос слов */
+    white-space: normal; /* Разрешаем перенос текста */
+    overflow: hidden; /* Скрываем выходящий за границы текст */
+    text-overflow: ellipsis; /* Добавляем многоточие */
+}
+
+/* Уменьшаем ширину узких столбцов */
+th, td {
+    max-width: 150px; /* Ограничиваем ширину столбцов */
+    min-width: 50px; /* Минимальная ширина */
+    word-wrap: break-word; /* Перенос длинных слов */
+    white-space: normal; /* Разрешаем перенос строк */
+    overflow: hidden; /* Скрываем текст за пределами ячейки */
+    text-overflow: ellipsis; /* Добавляем многоточие для длинного текста */
+}
+
+/* Стили для столбца Name */
+th.name-col, td.name-col {
+    max-width: 300px; /* Максимальная ширина столбца "Name" */
+    word-wrap: break-word; /* Перенос слов */
+    white-space: normal; /* Перенос длинных строк */
+    text-overflow: ellipsis; /* Добавляем многоточие */
+    overflow: hidden; /* Скрываем текст, выходящий за границы */
+}
+
+/* Кнопки действий */
+.btn {
+    width: 60px; /* Фиксированная ширина кнопок */
+    font-size: 12px; /* Размер текста */
+    padding: 5px 10px; /* Внутренний отступ */
+    border-radius: 5px; /* Закруглённые углы */
+    color: #fff; /* Белый текст */
+    text-decoration: none; /* Убираем подчеркивание */
+    text-align: center; /* Центрируем текст */
+}
+
+.btn-custom-edit {
+    background-color: #007bff; /* Синий фон */
+    border: 1px solid #007bff; /* Синяя граница */
+}
+
+.btn-custom-delete {
+    background-color: #dc3545; /* Красный фон */
+    border: 1px solid #dc3545; /* Красная граница */
+}
+
+/* Ховеры для кнопок */
+.btn-custom-edit:hover {
+    background-color: #0056b3; /* Более тёмный синий при наведении */
+    border-color: #0056b3; /* Соответствующая граница */
+}
+
+.btn-custom-delete:hover {
+    background-color: #c82333; /* Более тёмный красный при наведении */
+    border-color: #c82333; /* Соответствующая граница */
+}
+
+/* Стиль для фильтров */
 .header-buttons {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 1rem;
+    margin-bottom: 20px; /* Отступ снизу */
 }
-.header-buttons h1 {
-    margin: 0;
+
+input[type="date"] {
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
 }
-.narrow-table-container {
-    width: 130%; /* Уменьшаем ширину контейнера */
-    overflow-x: auto; /* Добавляем горизонтальную прокрутку, если нужно */
-}
-table {
-    border-collapse: collapse; /* Убираем двойные границы */
-    width: 130%; /* Устанавливаем ширину таблицы */
-    margin-bottom: 20px; /* Добавляем отступ снизу */
-    font-size: 12px; /* Увеличиваем размер шрифта для всей таблицы */
-}
-th, td {
-    border: 1px solid #ddd; /* Добавляем тонкие границы */
-    padding: 3px; /* Уменьшаем отступы внутри ячеек */
-    text-align: left; /* Выравниваем текст по левому краю */
-    line-height: 1; /* Уменьшаем высоту строк */
-    white-space: nowrap; /* Предотвращаем перенос текста */
-    overflow: hidden; /* Обрываем текст, который не помещается */
-    text-overflow: ellipsis; /* Добавляем многоточие для обрезанного текста */
-}
-th {
-    background-color: #f2f2f2; /* Добавляем фон для заголовков */
-}
-tr:nth-child(even) {
-    background-color: #f9f9f9; /* Добавляем чередующийся фон для строк */
-}
-tr:hover {
-    background-color: #f1f1f1; /* Добавляем эффект наведения для строк */
-}
-.actions {
-    display: flex;
-    gap: 10px;
-    justify-content: flex-end;
-}
-.btn-custom-edit, .btn-custom-delete {
-    background-color: blue !important; /* Измененный цвет для кнопки Edit */
-    color: white;
+
+button.btn {
+    background-color: #007bff; /* Синий фон */
     border: none;
-    padding: 5px 10px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 10px;
-    margin: 0 2px; /* Уменьшаем отступы сверху и снизу до 0 */
+    color: white;
+    padding: 6px 12px;
+    font-size: 14px;
     cursor: pointer;
     border-radius: 4px;
 }
 
-.btn-custom-edit:hover {
-    background-color: #45a049 !important;
-}
-
-.btn-custom-delete {
-    background-color: red !important; /* Красный цвет для кнопки Delete */
-}
-
-.btn-custom-delete:hover {
-    background-color: #d32f2f !important;
+button.btn:hover {
+    background-color: #0056b3; /* Более тёмный синий при наведении */
 }

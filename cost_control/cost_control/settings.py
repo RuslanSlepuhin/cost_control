@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/5.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
-
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -26,10 +26,14 @@ SECRET_KEY = 'django-insecure-kca(^bwuhz=4rmi@df6vcp9uj1kpj^a3$f%g^+8b%))p#_b%gk
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    '6690-178-122-255-37.ngrok-free.app',
-    '127.0.0.1'
+    'b99b-178-127-97-126.ngrok-free.app',
+    '127.0.0.1',
+    '192.168.100.5'
 ]
-CSRF_TRUSTED_ORIGINS = ['https://6690-178-122-255-37.ngrok-free.app']
+CSRF_TRUSTED_ORIGINS = [
+    'https://6690-178-122-255-37.ngrok-free.app',
+    'https://b99b-178-127-97-126.ngrok-free.app'
+]
 
 
 # Application definition
@@ -125,7 +129,12 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [BASE_DIR / "static"]
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+# Дополнительные настройки для статических файлов
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
+]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
