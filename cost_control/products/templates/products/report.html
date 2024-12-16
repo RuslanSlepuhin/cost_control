@@ -28,9 +28,11 @@
             <input type="date" id="end_date" name="end_date" value="{{ end_date }}">
         </div>
         <button type="submit">Generate Report</button>
+        <div class="total-sum">Total: {{ total_sum|floatformat:2 }}</div>
     </form>
     <div id="chart-container">
         <canvas id="myChart"></canvas>
+        <canvas id="barChart"></canvas>
     </div>
     <br>
     <br>
@@ -61,13 +63,16 @@
     <button id="export-button" class="button-gray">Export Data</button> <!-- Добавляем кнопку для экспорта данных -->
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            var ctx = document.getElementById('myChart').getContext('2d');
+            var ctxPie = document.getElementById('myChart').getContext('2d');
+            var ctxBar = document.getElementById('barChart').getContext('2d');
+
             var labels = [{% for item in food_report %}'{{ item.subcategory__name }}',{% endfor %}];
             var data = [{% for item in food_report %}{{ item.total_price_sum|floatformat:2 }},{% endfor %}];
             var total = data.reduce((a, b) => a + b, 0);
             var percentages = data.map(value => (value / total) * 100);
 
-            var myChart = new Chart(ctx, {
+            // Круговая диаграмма
+            var myPieChart = new Chart(ctxPie, {
                 type: 'pie',
                 data: {
                     labels: labels,
@@ -126,6 +131,73 @@
                     }
                 },
             });
+
+            // Столбчатая диаграмма
+            var myBarChart = new Chart(ctxBar, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Total Price',
+                        data: data,
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.2)',
+                            'rgba(54, 162, 235, 0.2)',
+                            'rgba(255, 206, 86, 0.2)',
+                            'rgba(75, 192, 192, 0.2)',
+                            'rgba(153, 102, 255, 0.2)',
+                            'rgba(255, 159, 64, 0.2)',
+                            'rgba(237, 125, 49, 0.2)',
+                            'rgba(102, 187, 106, 0.2)',
+                            'rgba(147, 112, 219, 0.2)',
+                            'rgba(240, 173, 78, 0.2)',
+                            'rgba(211, 84, 0, 0.2)',
+                            'rgba(0, 114, 178, 0.2)',
+                            'rgba(0, 121, 107, 0.2)'
+                        ],
+                        borderColor: [
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(255, 206, 86, 1)',
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(153, 102, 255, 1)',
+                            'rgba(255, 159, 64, 1)',
+                            'rgba(237, 125, 49, 1)',
+                            'rgba(102, 187, 106, 1)',
+                            'rgba(147, 112, 219, 1)',
+                            'rgba(240, 173, 78, 1)',
+                            'rgba(211, 84, 0, 1)',
+                            'rgba(0, 114, 178, 1)',
+                            'rgba(0, 121, 107, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top',
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.label || '';
+                                    let value = context.raw || 0;
+                                    return `${label}: ${value.toFixed(2)}`;
+                                }
+                            }
+                        }
+                    }
+                },
+            });
         });
 
         // JavaScript для перенаправления на страницу ввода
@@ -144,4 +216,5 @@
     </script>
 </body>
 </html>
+
 

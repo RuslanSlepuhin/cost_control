@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from .google_drive_view import append_to_google_sheet
 from .models import Product, Category, Subcategory
 from django.db.models import Sum, Count
@@ -141,8 +143,19 @@ def load_subcategories(request):
     return JsonResponse(list(subcategories.values('id', 'name')), safe=False)
 
 def product_list(request):
-    # Получаем все записи из модели Product и сортируем их по дате создания, категории и субкатегории
-    products = Product.objects.all().order_by('-purchase_date', 'category__name', 'subcategory__name')
+    start_date = request.GET.get('start_date')
+    end_date = request.GET.get('end_date')
+
+    products = Product.objects.all()
+
+    if start_date:
+        start_date = datetime.strptime(start_date, '%Y-%m-%d')
+        products = products.filter(purchase_date__gte=start_date)
+
+    if end_date:
+        end_date = datetime.strptime(end_date, '%Y-%m-%d')
+        products = products.filter(purchase_date__lte=end_date)
+
     return render(request, 'products/product_list.html', {'products': products})
 
 def edit_product(request, product_id):
@@ -167,3 +180,5 @@ def get_subcategories(request):
     category_id = request.GET.get('category_id')
     subcategories = Subcategory.objects.filter(category_id=category_id).values('id', 'name')
     return JsonResponse(list(subcategories), safe=False)
+
+
